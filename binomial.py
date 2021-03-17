@@ -23,6 +23,7 @@ class Binomial:
         self.d = d
 
     def find_probability(self):
+        """ This function finds the probability of going up a path in the tree."""
 
         probabilityOfGoingUp = ((np.exp(self.riskFreeRate * self.timeToExpiration / self.numberOfSteps)
                                 - self.d) / (self.u - self.d))
@@ -32,7 +33,9 @@ class Binomial:
         return probabilityOfGoingUp
 
     def find_endstep_asset_prices(self):
-
+        """" This function finds all possible expected asset prices at the end of the process
+        and then stores them all in a list.
+        """
         endStepAssetPrices = []
 
         for i in range(self.numberOfSteps + 1):
@@ -50,6 +53,10 @@ class Binomial:
         return endStepAssetPrices
 
     def find_endstep_option_price(self):
+        """ This function uses the expected asset prices at the end of the process
+        to find all possible payoffs for the option.
+        It takes the payoff as max(S[j] - X, 0)
+        """
 
         endStepAssetPrices = self.find_endstep_asset_prices()
 
@@ -61,6 +68,14 @@ class Binomial:
         return endStepOptionPrices
 
     def option_price(self):
+        """ This is the main function that calculates the present day
+        expected value of an option given all the inputs.
+        It initially calculates all possible payoffs and then finds the
+        probabililty of going to the right(u) child instead of the left(d) child.
+        
+        It then finds and sums along all possible paths that the process could have taken.
+        This value is then discounted to get the present expected value of the option.
+        """
 
         endStepOptionPrices = self.find_endstep_option_price()
         probability = self.find_probability()
