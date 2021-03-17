@@ -59,7 +59,7 @@ class Binomial:
         """
 
         endStepAssetPrices = self.find_endstep_asset_prices()
-
+        
         endStepOptionPrices = [
             max(possibleAssetPrice - self.expirationPrice, 0)
             for possibleAssetPrice in endStepAssetPrices
@@ -81,7 +81,7 @@ class Binomial:
         probability = self.find_probability()
         optionArray = []
         for j, value in enumerate(endStepOptionPrices):
-            endstepOption = binomial.pmf(j, self.numberOfSteps, probability)
+            endstepOption = binomial.pmf(j, self.numberOfSteps, probability) * value
             optionArray.append(endstepOption)
 
         futureExpectedValue = sum(optionArray)
