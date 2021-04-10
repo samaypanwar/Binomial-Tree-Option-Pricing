@@ -13,12 +13,14 @@ class Binomial:
         d,
         numberOfSteps,
         expirationPrice,
+        typeOfOption
     ):
         self.initialAssetPrice = initialAssetPrice
         self.riskFreeRate = riskFreeRate
         self.timeToExpiration = timeToExpiration
         self.numberOfSteps = numberOfSteps
         self.expirationPrice = expirationPrice
+        self.typeOfOption = typeOfOption
         self.u = u
         self.d = d
 
@@ -59,20 +61,30 @@ class Binomial:
         """
 
         endStepAssetPrices = self.find_endstep_asset_prices()
-        
-        endStepOptionPrices = [
-            max(possibleAssetPrice - self.expirationPrice, 0)
-            for possibleAssetPrice in endStepAssetPrices
-        ]
+
+        if self.typeOfOption == 'call':
+            endStepOptionPrices = [
+                max(possibleAssetPrice - self.expirationPrice, 0)
+                for possibleAssetPrice in endStepAssetPrices
+            ]
+
+        elif self.typeOfOption == 'put':
+            endStepOptionPrices = [
+                max(self.expirationPrice - possibleAssetPrice, 0)
+                for possibleAssetPrice in endStepAssetPrices
+            ]
+
+        else: raise KeyError(f"{self.typeOfOption} is not a valid input for 'typeOfOption', please try again")
 
         return endStepOptionPrices
+
 
     def option_price(self):
         """ This is the main function that calculates the present day
         expected value of an option given all the inputs.
         It initially calculates all possible payoffs and then finds the
         probabililty of going to the right(u) child instead of the left(d) child.
-        
+
         It then finds and sums along all possible paths that the process could have taken.
         This value is then discounted to get the present expected value of the option.
         """
@@ -88,7 +100,7 @@ class Binomial:
         print(f"Future expected value of option: {futureExpectedValue: .3f} Dollars")
 
         optionPrice = np.exp(-self.riskFreeRate * self.timeToExpiration) * futureExpectedValue
-        
+
         print(f"Price of Option right now: {optionPrice: .3f} Dollars")
 
         return optionPrice

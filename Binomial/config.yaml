@@ -1,0 +1,8 @@
+typeOfOption : 'call'
+initialAssetPrice : 100
+riskFreeRate : 0.05
+timeToExpiration : 1
+u : 1.1
+d : 0.9
+numberOfSteps: 2
+expirationPrice : 100
